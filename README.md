@@ -39,10 +39,12 @@ sam local invoke AlbDiscoverEnis
 
 1. Open cloud9 dev environment
 2. Navigate to the project folder and delete the cloud formation stack
+
 ```bash
 aws cloudformation delete-stack --stack-name AblInterfaceMonitoringStack --region us-east-1
 ```
 3. Optional, you can monitor the delete operation:
+
 ```bash
 aws cloudformation wait stack-delete-complete --stack-name AblInterfaceMonitoringStack --region us-east-1
 ```
