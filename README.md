@@ -7,6 +7,7 @@ in a dynamodb table. This table can be used to build Athena queries on flow logs
 ## Pre-requisites
 
 1. Active AWS account
+2. S3 bucket to be used for artifacts
 
 ## Environment set-up
 
@@ -24,7 +25,7 @@ in a dynamodb table. This table can be used to build Athena queries on flow logs
 ```bash
 cd ALB-Interface-Monitoring
 sam build
-sam deploy --stack-name AblInterfaceMonitoringStack --region us-east-1  --resolve-s3 --capabilities CAPABILITY_IAM
+sam deploy --stack-name AblInterfaceMonitoringStack --region us-east-1    --s3-bucket <YOUR_BUCKET_NAME> --capabilities CAPABILITY_IAM
 ```
 
 9. (Optional) Execute a local invoke of the lambda function if your load balancer is present before the deployment:
