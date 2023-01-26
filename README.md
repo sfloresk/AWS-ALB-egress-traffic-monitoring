@@ -22,7 +22,7 @@ in a dynamodb table. This table can be used to build Athena queries on flow logs
 8. Build and deploy:
 
 ```bash
-cd AlbInterfaceMonitoring
+cd ALB-Interface-Monitoring
 sam build
 sam deploy --stack-name AblInterfaceMonitoringStack --region us-east-1  --resolve-s3 --capabilities CAPABILITY_IAM
 ```
