@@ -1,0 +1,131 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ALB Interface Monitoring
+
+  Serverless application to monitor ENI changes associated to a given application load balancer
+
+Globals:
+  Function:
+    Runtime: python3.7
+    Timeout: 180
+    Environment:
+      Variables:
+        EVENTS_TABLE: ALBInterfacesUpdates
+        ALB_NAME: Test751
+        
+Resources:
+  ALBInterfacesUpdatesTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: ALBInterfacesUpdates
+      AttributeDefinitions: 
+        - AttributeName: interface_id
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: interface_id
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  AlbInterfaceHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/alb_interface_event_handler/
+      Handler: alb_interface_event_handler.lambda_handler
+      Events:
+        Trigger:
+          Type: CloudWatchEvent 
+          Properties:
+            Pattern:
+              source:
+                - aws.ec2
+              detail-type:
+                - AWS API Call via CloudTrail
+              detail:
+                eventName:
+                  - CreateNetworkInterface
+                  - DeleteNetworkInterface
+                userAgent:
+                  - elasticloadbalancing.amazonaws.com
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:Query 
+              - dynamodb:Scan
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - dynamodb:GetRecords
+              - dynamodb:DeleteItem
+              - dynamodb:DescribeTable
+            Resource:
+              - !Sub 
+                - 'arn:aws:dynamodb:*:*:table/${Table}'
+                - { Table: !Ref ALBInterfacesUpdatesTable }
+          - Effect: Allow
+            Action:
+              - logs:*
+            Resource:
+              - "*"  
+          - Effect: Allow
+            Action:
+              - ec2:Describe*
+            Resource:
+              - "*"  
+          - Effect: Allow
+            Action:
+              - elasticloadbalancing:Describe*
+            Resource:
+              - "*"
+
+  AlbDiscoverEnis:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/discover_alb_enis/
+      Handler: alb_discover_enis.lambda_handler
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:Query 
+              - dynamodb:Scan
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - dynamodb:GetRecords
+              - dynamodb:DeleteItem
+              - dynamodb:DescribeTable
+            Resource:
+              - !Sub 
+                - 'arn:aws:dynamodb:*:*:table/${Table}'
+                - { Table: !Ref ALBInterfacesUpdatesTable }
+          - Effect: Allow
+            Action:
+              - logs:*
+            Resource:
+              - "*"  
+          - Effect: Allow
+            Action:
+              - ec2:Describe*
+            Resource:
+              - "*"  
+          - Effect: Allow
+            Action:
+              - elasticloadbalancing:Describe*
+            Resource:
+              - "*"
+
+Outputs:
+  DynamoDBTableName:
+    Description: "DynamoDB Table Name"
+    Value: !Ref ALBInterfacesUpdatesTable
+  AlbInterfaceHandlerARN:
+    Description: "AlbInterfaceHandler Lambda Function ARN"
+    Value: !GetAtt AlbInterfaceHandler.Arn
+    
+  AlbDiscoverEnisARN:
+    Description: "AlbDiscoverEnis Lambda Function ARN"
+    Value: !GetAtt AlbDiscoverEnis.Arn
