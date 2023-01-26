@@ -47,4 +47,4 @@ aws cloudformation delete-stack --stack-name AblInterfaceMonitoringStack --regio
 
 ```bash
 aws cloudformation wait stack-delete-complete --stack-name AblInterfaceMonitoringStack --region us-east-1
-```
+``` 

@@ -9,7 +9,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 import boto3
 import os
-
+ 
 # Define global variables
 ec2 = boto3.client('ec2')
 LB_NAME=os.getenv("ALB_NAME")

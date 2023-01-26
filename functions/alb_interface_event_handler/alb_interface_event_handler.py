@@ -9,7 +9,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import json
 import os
 import boto3
-
+ 
 print('Loading function')
 
 # Define global variables

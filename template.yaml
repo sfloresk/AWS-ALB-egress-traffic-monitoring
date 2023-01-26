@@ -128,4 +128,4 @@ Outputs:
     
   AlbDiscoverEnisARN:
     Description: "AlbDiscoverEnis Lambda Function ARN"
-    Value: !GetAtt AlbDiscoverEnis.Arn
+    Value: !GetAtt AlbDiscoverEnis.Arn 
