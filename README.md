@@ -18,7 +18,7 @@ in a dynamodb table. This table can be used to build Athena queries on flow logs
 4. Open cloud9 dev environment
 5. Disable temporary credentials and remove $HOME/.aws directory to make sure SAM uses your instance profile credentials
 6. Clone this repo
-7. *Navigate to the project folder and edit the template.yaml file - Modify line 15 with your load balancer's name (The value Test751 is used as example)*
+7. _*Navigate to the project folder and edit the template.yaml file - Modify line 15 with your load balancer's name (The value Test751 is used as example)*_
 8. Create a bucket, build and deploy:
 
 ```bash
