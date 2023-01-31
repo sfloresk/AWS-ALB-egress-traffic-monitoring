@@ -7,7 +7,6 @@ in a dynamodb table. This table can be used to build Athena queries on flow logs
 ## Pre-requisites
 
 1. Active AWS account
-2. S3 bucket to be used for artifacts
 
 ## Environment set-up
 
@@ -19,13 +18,15 @@ in a dynamodb table. This table can be used to build Athena queries on flow logs
 4. Open cloud9 dev environment
 5. Disable temporary credentials and remove $HOME/.aws directory to make sure SAM uses your instance profile credentials
 6. Clone this repo
-7. Navigate to the project folder and edit the template.yaml - Modify line 15 with your load balancer's name (The value Test751 is used as example)
-8. Build and deploy:
+7. *Navigate to the project folder and edit the template.yaml file - Modify line 15 with your load balancer's name (The value Test751 is used as example)*
+8. Create a bucket, build and deploy:
 
 ```bash
 cd ALB-Interface-Monitoring
+BUCKET_NAME=alb-interface-monitor-$(tr -dc a-z0-9 </dev/urandom | head -c 13 ; echo '')
+aws s3 mb s3://$BUCKET_NAME
 sam build
-sam deploy --stack-name AblInterfaceMonitoringStack --region us-east-1    --s3-bucket <YOUR_BUCKET_NAME> --capabilities CAPABILITY_IAM
+sam deploy --stack-name AblInterfaceMonitoringStack --region us-east-1  --s3-bucket $BUCKET_NAME --capabilities CAPABILITY_IAM
 ```
 
 9. (Optional) Execute a local invoke of the lambda function if your load balancer is present before the deployment:
