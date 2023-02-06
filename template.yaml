@@ -67,7 +67,9 @@ Resources:
                 - { Table: !Ref ALBInterfacesUpdatesTable }
           - Effect: Allow
             Action:
-              - logs:*
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
             Resource:
               - "*"  
           - Effect: Allow
@@ -104,7 +106,9 @@ Resources:
                 - { Table: !Ref ALBInterfacesUpdatesTable }
           - Effect: Allow
             Action:
-              - logs:*
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
             Resource:
               - "*"  
           - Effect: Allow
@@ -117,6 +121,31 @@ Resources:
               - elasticloadbalancing:Describe*
             Resource:
               - "*"
+  AlbRetrieveEnis:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/get_alb_interfaces/
+      Handler: get_alb_interfaces.lambda_handler
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:Query 
+              - dynamodb:Scan
+              - dynamodb:GetRecords
+              - dynamodb:DescribeTable
+            Resource:
+              - !Sub 
+                - 'arn:aws:dynamodb:*:*:table/${Table}'
+                - { Table: !Ref ALBInterfacesUpdatesTable }
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource:
+              - "*"  
 
 Outputs:
   DynamoDBTableName:

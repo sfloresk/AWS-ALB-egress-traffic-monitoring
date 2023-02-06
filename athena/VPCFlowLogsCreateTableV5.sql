@@ -1,4 +1,4 @@
-CREATE EXTERNAL TABLE IF NOT EXISTS `vpc_flow_logs_v5` (
+CREATE EXTERNAL TABLE IF NOT EXISTS `alb-interface-monitoring-vpc-flow-logs` ( 
     `account_id` string, 
     `action` string, 
     `az_id` string, 
