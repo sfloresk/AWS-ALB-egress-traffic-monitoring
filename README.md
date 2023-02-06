@@ -1,9 +1,20 @@
-# AWS Application Load Balancer - Egress Traffic Monitoring
+# AWS Application Load Balancer - Egress traffic monitoring and correlation with cost & usage reports
 
-Serverless application to monitor ENI changes associated to a given application load balancer. The application uses 
-EventBridge to intercept CreateNetworkInterface and DeleteNetworkInterface events and stores the interface ID, load balancer name and a timestamp of attachment/creation and deletion of the ENI in a DynamoDB table via Lambda. This table can be used to retrieve egress traffic to the internet using flow logs and compare the bytes with the charges populated in cost and usage reports.
+## Solution overview
+
+Serverless application to monitor ENI changes associated to a given application load balancer. This information can be used to retrieve egress traffic to the internet using flow logs and compare the bytes with the charges populated in cost and usage reports.
 
 > These instructions assume us-east-1 as region but that is not mandatory
+
+## Solution architecture
+
+For new interfaces, the solution will detect them using a subscription of events triggered by cloudtrail
+
+![Screenshot](docs/detection-of-new-interfaces.png?raw=true "Detection of new interfaces")
+
+For existing interfaces attached to a ALB, there is a different lambda function that can be invoked to discover them
+
+![Screenshot](docs/discover-existing-interfaces.png?raw=true "Discover existing interfaces")
 
 ## Pre-requisites
 
