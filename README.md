@@ -10,7 +10,7 @@ Serverless application to monitor ENI changes associated to a given application 
 
 For new interfaces, the solution will detect them using a subscription of events triggered by cloudtrail
 
-![Screenshot](docs/detection-of-new-interfaces.png?raw=true "Detection of new interfaces")
+![Screenshot](docs/detection-new-interfaces.png?raw=true "Detection of new interfaces")
 
 For existing interfaces attached to a ALB, there is a different lambda function that can be invoked to discover them
 
