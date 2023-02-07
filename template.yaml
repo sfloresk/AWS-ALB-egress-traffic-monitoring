@@ -86,7 +86,7 @@ Resources:
   AlbDiscoverEnis:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functions/discover_alb_enis/
+      CodeUri: functions/alb_discover_enis/
       Handler: alb_discover_enis.lambda_handler
       Policies:
         Statement:
@@ -121,11 +121,12 @@ Resources:
               - elasticloadbalancing:Describe*
             Resource:
               - "*"
+  
   AlbRetrieveEnis:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: functions/get_alb_interfaces/
-      Handler: get_alb_interfaces.lambda_handler
+      CodeUri: functions/alb_get_interfaces/
+      Handler: alb_get_interfaces.lambda_handler
       Policies:
         Statement:
           - Effect: Allow
