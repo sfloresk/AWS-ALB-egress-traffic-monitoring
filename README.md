@@ -32,7 +32,7 @@ For existing interfaces attached to a ALB, there is a different lambda function 
 
 1. Navigate to Cloud9 Console
 2. Create a new environment with default settings 
-3. (Optional) Attach an admin role to the environment EC2 instance if you would like to use a role instead of your credentials - **This is not recommended for production deployments, for a detailed list of actions that this deployment does, refer to the template.yaml file and the following sections**
+3. (Optional) Attach an admin role to the environment EC2 instance if you would like to use a role instead of your credentials - **Attaching an admin role is not recommended for production deployments, for a detailed list of actions that this deployment does, refer to the template.yaml file and the following sections**
 4. Open the Cloud9 development environment
 5. (Optional) Disable temporary credentials and remove $HOME/.aws directory to make sure SAM uses your instance profile credentials if you prefer to use a role
 6. Clone this repo
@@ -40,7 +40,7 @@ For existing interfaces attached to a ALB, there is a different lambda function 
 8. Create a bucket, build and deploy:
 
     ```bash
-    cd ALB-Interface-Monitoring
+    cd  AWS-ALB-egress-traffic-monitoring
     BUCKET_NAME=alb-interface-monitoring-sam-$(tr -dc a-z0-9 </dev/urandom | head -c 13 ; echo '')
     aws s3 mb s3://$BUCKET_NAME
     sam build
@@ -62,19 +62,19 @@ In order to find the egress traffic for the discovered interfaces, VPC flow logs
     VPC_FLOW_LOGS_BUCKET_NAME=alb-interface-monitoring-vpc-flow-logs-$(tr -dc a-z0-9 </dev/urandom | head -c 13 ; echo '')
     aws s3 mb s3://$VPC_FLOW_LOGS_BUCKET_NAME
     cat > /tmp/alb-interface-monitoring-lifecycle-policy.json << EOF
-{
-"Rules": [
     {
-        "Status": "Enabled", 
-        "Prefix": "",
-        "Expiration": {
-            "Days": 14
-        }, 
-        "ID": "Delete after 14 days"
+    "Rules": [
+        {
+            "Status": "Enabled", 
+            "Prefix": "",
+            "Expiration": {
+                "Days": 14
+            }, 
+            "ID": "Delete after 14 days"
+        }
+        ]
     }
-    ]
-}
-EOF
+    EOF
     aws s3api put-bucket-lifecycle --bucket $VPC_FLOW_LOGS_BUCKET_NAME --lifecycle-configuration file:///tmp/alb-interface-monitoring-lifecycle-policy.json
     ```
 
