@@ -45,6 +45,7 @@ For existing interfaces attached to a ALB, there is a different lambda function 
     aws s3 mb s3://$BUCKET_NAME
     sam build
     sam deploy --stack-name AblInterfaceMonitoringStack --region us-east-1  --s3-bucket $BUCKET_NAME --capabilities CAPABILITY_IAM
+
     ```
 
 9. If the ALB has been created before this deployment, execute a local invoke of the discover ENIs lambda function - this will populate the DynamoDB table with the current ALB's interfaces:
@@ -76,6 +77,7 @@ cat > /tmp/alb-interface-monitoring-lifecycle-policy.json << EOF
 }
 EOF
 aws s3api put-bucket-lifecycle --bucket $VPC_FLOW_LOGS_BUCKET_NAME --lifecycle-configuration file:///tmp/alb-interface-monitoring-lifecycle-policy.json
+
 ```
 
 2. Create the flow logs 
