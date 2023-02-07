@@ -150,24 +150,24 @@ aws s3api put-bucket-lifecycle --bucket $VPC_FLOW_LOGS_BUCKET_NAME --lifecycle-c
     * In your cloud9 environment, open the file functions -> alb_get_interfaces -> alb_get_interfaces.py and change the date in line 26 with the date you would like to execute the queries with. For example, 2023-01-31 is a valid value.
     * Build and execute a local invoke of the function:
 
-            ```bash
-            sam build
-            sam local invoke AlbRetrieveEnis
-            ```
+    ```bash
+    sam build
+    sam local invoke AlbRetrieveEnis
+    ```
 
     * The result should look like this:
 
-            ```bash
-            Invoking get_alb_interfaces.lambda_handler (python3.7)
-            (...)
-            Using table ALBInterfacesUpdates and ALB Test751
-            eni-02d3ad2e138be4a41
-            eni-0286b85fcf79e3320
-            eni-02d0c0d5c268dacf4
-            eni-0122206c98dcf72e4
-            "Interface retrieval finished"
-            (...)
-            ```
+    ```bash
+    Invoking get_alb_interfaces.lambda_handler (python3.7)
+    (...)
+    Using table ALBInterfacesUpdates and ALB Test751
+    eni-02d3ad2e138be4a41
+    eni-0286b85fcf79e3320
+    eni-02d0c0d5c268dacf4
+    eni-0122206c98dcf72e4
+    "Interface retrieval finished"
+    (...)
+    ```
 
     b. Modify the date statement with the value that you would like Athena to run the query with. This should be the same date as the one used to find the interfaces in DynamoDB
     
