@@ -27,7 +27,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS `alb-interface-monitoring-vpc-flow-logs` (
     `traffic_path` int, 
     `type` string, 
     `version` int, 
-    `vpc_id` string, 
+    `vpc_id` string
 )
 PARTITIONED BY (`date` date)
 ROW FORMAT DELIMITED

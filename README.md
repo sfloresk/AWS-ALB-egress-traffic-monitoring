@@ -129,14 +129,14 @@ aws s3api put-bucket-lifecycle --bucket $VPC_FLOW_LOGS_BUCKET_NAME --lifecycle-c
 5. Execute a test query:
     ```sql
     SELECT *
-    FROM vpc_flow_logs_v5
+    FROM "alb-interface-monitoring-vpc-flow-logs"
     LIMIT 1
     ```
 
 6. Get the load balancer's ENIs egress traffic. For example:
     ```sql
     SELECT sum(bytes)/1024.0/1024.0/1024.0 as "GB Egress via IGW"
-    FROM vpc_flow_logs_v5 
+    FROM "alb-interface-monitoring-vpc-flow-logs" 
     where interface_id IN ('eni-0286b85fcf79e3320','eni-02d0c0d5c268dacf4','eni-0122206c98dcf72e4','eni-02d3ad2e138be4a41')
     and flow_direction like 'egress'
     and (traffic_path=8 or traffic_path=2)
@@ -147,11 +147,17 @@ aws s3api put-bucket-lifecycle --bucket $VPC_FLOW_LOGS_BUCKET_NAME --lifecycle-c
 
     a. Modify the interface_id statement to include your load balancer's interfaces for the desired date. This information is stored in the DynamoDB table created during the App Setup section, and there is a lambda function that can be invoked to automatically retrieve the ALB assigned interfaces in a given date:
     
-    * In your cloud9 environment, open the file functions -> get_alb_interfaces -> get_alb_interfaces.py and change the date in line 26 with the date you would like to execute the queries with. For example, 2023-01-31 is a valid value.
-    * Execute a local invoke of the function:
+    * In your cloud9 environment, open the file functions -> alb_get_interfaces -> alb_get_interfaces.py and change the date in line 26 with the date you would like to execute the queries with. For example, 2023-01-31 is a valid value.
+    * Build and execute a local invoke of the function:
 
             ```bash
-            $ sam local invoke AlbRetrieveEnis
+            sam build
+            sam local invoke AlbRetrieveEnis
+            ```
+
+    * The result should look like this:
+
+            ```bash
             Invoking get_alb_interfaces.lambda_handler (python3.7)
             (...)
             Using table ALBInterfacesUpdates and ALB Test751
@@ -166,6 +172,9 @@ aws s3api put-bucket-lifecycle --bucket $VPC_FLOW_LOGS_BUCKET_NAME --lifecycle-c
     b. Modify the date statement with the value that you would like Athena to run the query with. This should be the same date as the one used to find the interfaces in DynamoDB
     
     > More information of each field in the VPC flow log can be found in this link: https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html#flow-logs-fields
+
+    Make a note of the result, it will be compared against the cost and usage report in the following section.
+
 
 ## Usage and cost report
 
@@ -188,10 +197,14 @@ So far, we have created an application that keeps track of the interfaces of a g
     ```
     
     This query aggregates the usage amount (in GB) for egress traffic for the entire day specified (January 31st 2023) for a given ARN. For this query to work in your environment, make the following changes:
-    
-    a. In line 7, modify the ARN for the one belonging to your ALB
 
-    b. In line 5 and 6, modify the dates for the time range you would like to use. This should be the same time range used to query egress traffic from the ALB's ENIs in the previous section
+    a. In line 3, replace "detailed_cost_report" for the name of your table
+    
+    b. In line 7, replace the ARN for the one belonging to your ALB
+
+    c. In line 5 and 6, modify the dates for the time range you would like to use. This should be the same time range used to query egress traffic from the ALB's ENIs in the previous section
+
+    The result should be equal, or very similar, to the value returned by the VPC logs query mentioned in the previous section
 
 ## App tear-down
 
@@ -213,7 +226,7 @@ So far, we have created an application that keeps track of the interfaces of a g
 
 1. Delete the Athena table:
     ```sql
-    DROP TABLE vpc_flow_logs_v5;
+    DROP TABLE `alb-interface-monitoring-vpc-flow-logs`;
     ```
 2. Delete flow logs
     ```bash

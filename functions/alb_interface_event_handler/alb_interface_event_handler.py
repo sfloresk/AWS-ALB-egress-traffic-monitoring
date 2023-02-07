@@ -53,3 +53,4 @@ def lambda_handler(event, context):
                 print(f"Interface {interface_id} does not have an associated load balancer in DynamoDB - ignoring...")
     else:
         print(f"Interface {interface_id} event intercepted but has an error code - ignoring...")
+    return "Interface event handler finished"

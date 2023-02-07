@@ -40,4 +40,4 @@ def lambda_handler(event, context):
                         'load_balancer': LB_NAME})
             else:
                 print(f'ENI {eni["NetworkInterfaceId"]} already in dynamoDB table - ignoring...')
-            
+    return "Interface discovery finished"
