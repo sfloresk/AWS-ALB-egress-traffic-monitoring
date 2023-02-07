@@ -58,25 +58,25 @@ For existing interfaces attached to a ALB, there is a different lambda function 
 In order to find the egress traffic for the discovered interfaces, VPC flow logs need to be enable for the subnets configured in the ALB. In the cloud9 terminal, follow these steps:
 
 1. Create a bucket to store the VPC flow logs
-    ```bash
-    VPC_FLOW_LOGS_BUCKET_NAME=alb-interface-monitoring-vpc-flow-logs-$(tr -dc a-z0-9 </dev/urandom | head -c 13 ; echo '')
-    aws s3 mb s3://$VPC_FLOW_LOGS_BUCKET_NAME
-    cat > /tmp/alb-interface-monitoring-lifecycle-policy.json << EOF
+```bash
+VPC_FLOW_LOGS_BUCKET_NAME=alb-interface-monitoring-vpc-flow-logs-$(tr -dc a-z0-9 </dev/urandom | head -c 13 ; echo '')
+aws s3 mb s3://$VPC_FLOW_LOGS_BUCKET_NAME
+cat > /tmp/alb-interface-monitoring-lifecycle-policy.json << EOF
+{
+"Rules": [
     {
-    "Rules": [
-        {
-            "Status": "Enabled", 
-            "Prefix": "",
-            "Expiration": {
-                "Days": 14
-            }, 
-            "ID": "Delete after 14 days"
-        }
-        ]
+        "Status": "Enabled", 
+        "Prefix": "",
+        "Expiration": {
+            "Days": 14
+        }, 
+        "ID": "Delete after 14 days"
     }
-    EOF
-    aws s3api put-bucket-lifecycle --bucket $VPC_FLOW_LOGS_BUCKET_NAME --lifecycle-configuration file:///tmp/alb-interface-monitoring-lifecycle-policy.json
-    ```
+    ]
+}
+EOF
+aws s3api put-bucket-lifecycle --bucket $VPC_FLOW_LOGS_BUCKET_NAME --lifecycle-configuration file:///tmp/alb-interface-monitoring-lifecycle-policy.json
+```
 
 2. Create the flow logs 
 
